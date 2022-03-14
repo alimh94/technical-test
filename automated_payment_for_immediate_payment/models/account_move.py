@@ -27,6 +27,14 @@ class AccountMove(models.Model):
                         'ref': record.name,
                         'journal_id': journal_id,
                          }
-                        return self.env['account.payment'].create(payment_info)
+                        payment =  self.env['account.payment'].create(payment_info)
+                        payment.state = 'posted'
+                        inv1_receivable = record.line_ids.filtered(
+                            lambda l: l.account_id.internal_type == 'receivable')
+                        pay_receivable = payment.move_id.line_ids.filtered(
+                            lambda l: l.account_id.internal_type == 'receivable')
+
+                        (inv1_receivable + pay_receivable).reconcile()
+                        return payment
                     else:
                         raise UserError(_("There is no payment method created for cash payout please create it."))
