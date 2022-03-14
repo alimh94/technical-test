@@ -28,7 +28,7 @@ class AccountMove(models.Model):
                         'journal_id': journal_id,
                          }
                         payment =  self.env['account.payment'].create(payment_info)
-                        payment.state = 'posted'
+                        payment.action_post()
                         inv1_receivable = record.line_ids.filtered(
                             lambda l: l.account_id.internal_type == 'receivable')
                         pay_receivable = payment.move_id.line_ids.filtered(
